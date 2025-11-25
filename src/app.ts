@@ -5,9 +5,9 @@ import { ImageUploadComponent } from './components/ImageUpload';
 import { StorageService } from './services/StorageService';
 
 class CentralGPTApp {
-  private chatComponent: ChatComponent;
-  private statusBarComponent: StatusBarComponent;
-  private imageUploadComponent: ImageUploadComponent;
+  private chatComponent!: ChatComponent;
+  private statusBarComponent!: StatusBarComponent;
+  private imageUploadComponent!: ImageUploadComponent;
 
   constructor() {
     this.initializeApp();
@@ -19,9 +19,16 @@ class CentralGPTApp {
     
     // Initialize components
     this.statusBarComponent = new StatusBarComponent();
-    this.imageUploadComponent = new ImageUploadComponent(
-      document.getElementById('imageAttachments') as HTMLElement
-    );
+    
+    const imageAttachments = document.getElementById('imageAttachments');
+    if (imageAttachments) {
+      this.imageUploadComponent = new ImageUploadComponent(imageAttachments);
+    } else {
+      console.error('Image attachments container not found');
+      // Create a fallback or handle the error appropriately
+      this.imageUploadComponent = {} as ImageUploadComponent;
+    }
+    
     this.chatComponent = new ChatComponent();
     
     // Set up time remaining updates
@@ -31,7 +38,9 @@ class CentralGPTApp {
     
     // Focus on chat input
     const chatInput = document.getElementById('chatInput') as HTMLTextAreaElement;
-    chatInput.focus();
+    if (chatInput) {
+      chatInput.focus();
+    }
     
     console.log('CentralGPT TypeScript App initialized');
   }
